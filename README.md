@@ -2,6 +2,7 @@ Zabbix-Server-Ansible
 =====================
 
 Zabbix Server module for ansible
+This module will install zabbix server with postgresql and apache if u want on a redhat/centos machine
 
 How To:
 -------
@@ -10,4 +11,11 @@ How To:
 3. Install with tags if u want to exclude apache, postgres or zabbix 
 4. ansible-playbook zabbix-server.yml --tags "postgres,http,zabbix"
 5. Else just run ansible-playbook zabbix-server.yml
+
+
+Todo:
+-----
+1. Add config for debian
+2. Add selinux
+3. Add iptables
 
