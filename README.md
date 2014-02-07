@@ -38,7 +38,7 @@ GPL V2
 Author Information
 ------------------
 
-Patrik Uytterhoeven
-patrik( at )open-future.be
-www.open-future.be
+* Patrik Uytterhoeven
+* patrik( at )open-future.be
+* [www.open-future.be](http://www.open-future.be)
 
