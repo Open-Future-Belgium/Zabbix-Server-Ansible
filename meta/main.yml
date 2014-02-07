@@ -1,9 +1,9 @@
 ---
 galaxy_info:
-  author: your name
+  author: Patrik Uytterhoeven
   description: 
-  company: your company (optional)
-  license: license (GPLv2, CC-BY, etc)
+  company: Open-Future
+  license: license (GPLv2) 
   min_ansible_version: 1.2
   #
   # Below are all platforms currently available. Just uncomment
@@ -11,11 +11,11 @@ galaxy_info:
   # platform on this list, let us know and we'll get it added!
   #
   #platforms:
-  #- name: EL
-  #  versions:
+  - name: EL
+    versions:
   #  - all
   #  - 5
-  #  - 6
+    - 6
   #- name: GenericUNIX
   #  versions:
   #  - all
@@ -97,7 +97,7 @@ galaxy_info:
   #- database:nosql
   #- database:sql
   #- development
-  #- monitoring
+  - monitoring
   #- networking
   #- packaging
   #- system
