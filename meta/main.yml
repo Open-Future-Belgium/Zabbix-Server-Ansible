@@ -1,10 +1,10 @@
 ---
 galaxy_info:
-  author: 'Patrik Uytterhoeven'
+  author: "Patrik Uytterhoeven"
   description: 
-  company: 'Open-Future'
+  company: "Open-Future"
   license: license (GPLv2) 
-  min_ansible_version: 1.2
+  min_ansible_version: 1.4
   #
   # Below are all platforms currently available. Just uncomment
   # the ones that apply to your role. If you don't see your 
