@@ -1,0 +1,3 @@
+---
+# Configuration settings for apache
+http_servername: localhost

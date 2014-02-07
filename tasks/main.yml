@@ -1,0 +1,8 @@
+---
+- name: Unexpected OS
+  debug: msg="OS Family {{ ansible_os_family }} is not supported" fail=yes
+  when: not ansible_os_family == 'RedHat'
+
+- name: Install with Yum
+  include: RedHat.yml
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Centos"

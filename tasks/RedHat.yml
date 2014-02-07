@@ -1,0 +1,105 @@
+---
+# This playbook will install zabbix server  with a postgresql database and apache webserver
+
+- name: Create the Zabbix {{ zbx_version }} Repo
+  copy: src=zabbix.repo dest=/etc/yum.repos.d/zabbix.repo
+
+- name: Create the GPG key for zabbix {{ zbx_version }}
+  copy: src=RPM-GPG-KEY-ZABBIX dest=/etc/pki/rpm-gpg
+
+  
+- name: Import Postgresql Repo
+  yum: name=http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm state=present
+  tags:
+    - postgresql
+
+- name: install postgresql db packages
+  yum: name={{ item }} state=present
+  with_items:
+    - postgresql{{ pg_version_inst }}-server
+    - postgresql{{ pg_version_inst }}-contrib
+    - python-psycopg2
+  tags:
+    - postgresql
+  
+- name: install web packages
+  yum: name={{ item }} state=present
+  with_items:
+    - httpd
+    - php
+  tags:
+    -http
+
+- name: Initialise Postgresql Database
+  command: service postgresql-{{ pg_version }} initdb
+  tags: 
+    - postgres 
+
+- name: Update pg_hba.conf file
+  template: src=pg_hba.conf.j2 dest=/var/lib/pgsql/{{ pg_version }}/data/pg_hba.conf owner={{ pg_admin_user }} group={{ pg_admin_user }} mode=0640
+  tags:
+    - postgres
+
+- name: Update postgres.conf file
+  template: src=main.conf.j2 dest=/var/lib/pgsql/{{ pg_version }}/data/postgresql.conf owner={{ pg_admin_user }} group={{ pg_admin_user }} mode=0644
+  notify: restart postgresql
+  tags:
+    - postgres
+
+- name: install zabbix 2.2 server packages
+  yum: name={{ item }} state=present
+  with_items:
+    - zabbix-server-pgsql
+    - zabbix-web-pgsql
+
+- name: ensure postgresql server is running
+  service: name=postgresql-{{ pg_version }} state=started enabled=yes
+  tags:
+    - postgres
+
+- name: Create the Zabbix User and Database
+  include: postgresql.yml
+  tags: 
+    - postgres
+
+- name: Add .pgpass file
+  template: src=.pgpass.j2 dest=/root/.pgpass mode=0600
+  tags:
+    - postgres
+
+- name: Upload zabbix schema
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-2.2.1/create/schema.sql
+  tags:
+    - postges
+
+- name: Upload zabbix Images
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-2.2.1/create/images.sql
+  tags:
+    - postgres
+
+- name: Upload zabbix Data
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-2.2.1/create/data.sql
+  tags:
+    - postgres
+
+- name: Cleanup .pgpass file
+  file: path=/root/.pgpass state=absent
+
+- name: Update zabbix.conf file
+  template: src=zabbix.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf mode=0640
+  notify: restart httpd
+  tags:
+    - http
+
+- name: Update Apache httpd.conf file
+  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf mode=0644
+  tags:
+    -http
+
+- name: Ensure Apache is running
+  service: name=httpd state=started enabled=yes
+  tags:
+    - http
+
+- name: Ensure Zabbix Server is running
+  service: name=zabbix-server state=started enabled=yes

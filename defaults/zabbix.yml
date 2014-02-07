@@ -1,0 +1,14 @@
+---
+# default vars for zabbix php conf file
+zbx_version: 2.2.1
+zbx_php_max_execution: 300
+zbx_php_memory_limit: 128M
+zbx_php_post_max_size: 16M
+zbx_php_upload_max_filesize: 2M
+zbx_php_max_input_time: 300
+zbx_php_timezone: Europe/Brussels
+
+# default vars for zabbix database
+zbx_dbname: zabbix
+zbx_user: zabbix
+zbx_passwd: zabbix

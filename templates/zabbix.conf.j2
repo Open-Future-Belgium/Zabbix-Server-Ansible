@@ -1,0 +1,55 @@
+#
+# Zabbix monitoring system php web frontend
+#
+
+Alias /zabbix /usr/share/zabbix
+
+<Directory "/usr/share/zabbix">
+    Options FollowSymLinks
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+
+    php_value max_execution_time {{ zbx_php_max_execution }}
+    php_value memory_limit {{ zbx_php_memory_limit }}
+    php_value post_max_size {{ zbx_php_post_max_size }}
+    php_value upload_max_filesize {{ zbx_php_upload_max_filesize }}
+    php_value max_input_time {{ zbx_php_max_input_time }}
+    php_value date.timezone {{ zbx_php_timezone }}
+</Directory>
+
+<Directory "/usr/share/zabbix/conf">
+    Order deny,allow
+    Deny from all
+    <files *.php>
+        Order deny,allow
+        Deny from all
+    </files>
+</Directory>
+
+<Directory "/usr/share/zabbix/api">
+    Order deny,allow
+    Deny from all
+    <files *.php>
+        Order deny,allow
+        Deny from all
+    </files>
+</Directory>
+
+<Directory "/usr/share/zabbix/include">
+    Order deny,allow
+    Deny from all
+    <files *.php>
+        Order deny,allow
+        Deny from all
+    </files>
+</Directory>
+
+<Directory "/usr/share/zabbix/include/classes">
+    Order deny,allow
+    Deny from all
+    <files *.php>
+        Order deny,allow
+        Deny from all
+    </files>
+</Directory>

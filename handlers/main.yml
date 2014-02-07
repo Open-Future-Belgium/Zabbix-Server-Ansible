@@ -1,0 +1,11 @@
+---
+# handlers file for postgresql
+- name: restart postgresql
+  service: name=postgresql-{{ pg_version }} state=restarted
+  tags:
+    -postgres
+
+- name: restart httpd
+  service: name=httpd state=restarted
+  tags:
+    -http

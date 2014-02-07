@@ -1,0 +1,16 @@
+---
+# Create User Zabbix
+- postgresql_user: name='{{ zbx_user }}' password='{{ zbx_passwd }}' 
+
+# Create a new database with name "zabbix" and specific encoding and locale
+# settings. If a template different from "template0" is specified, encoding
+# and locale settings must match those of the template.
+- postgresql_db: name='{{ zbx_dbname }}'
+                 encoding='UTF-8'
+                 lc_collate='en_US.UTF-8'
+                 lc_ctype='en_US.UTF-8'
+                 template='template0'
+                 owner='{{ zbx_user }}'
+
+# Add user Zabbix to database 
+- postgresql_user: db='{{ zbx_dbname }}' name='{{ zbx_user }}' password='{{ zbx_passwd }}' 
