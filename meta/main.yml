@@ -1,9 +1,9 @@
 ---
 galaxy_info:
   author: "Patrik Uytterhoeven"
-  description: 
-  company: "Open-Future"
-  license: license (GPLv2) 
+  description: "Zabbix Server"
+  company: "Open Future"
+  license: GPLv2 
   min_ansible_version: 1.4
   #
   # Below are all platforms currently available. Just uncomment
