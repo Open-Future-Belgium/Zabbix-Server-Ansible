@@ -3,10 +3,13 @@
 
 - name: Create the Zabbix {{ zbx_version }} Repo
   copy: src=zabbix.repo dest=/etc/yum.repos.d/zabbix.repo
+  tags:
+    - zabbix
 
 - name: Create the GPG key for zabbix {{ zbx_version }}
   copy: src=RPM-GPG-KEY-ZABBIX dest=/etc/pki/rpm-gpg
-
+  tags:
+    -zabbix
   
 - name: Import Postgresql Repo
   yum: name=http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm state=present
@@ -51,6 +54,8 @@
   with_items:
     - zabbix-server-pgsql
     - zabbix-web-pgsql
+  tags:
+    - zabbix
 
 - name: ensure postgresql server is running
   service: name=postgresql-{{ pg_version }} state=started enabled=yes
@@ -103,3 +108,5 @@
 
 - name: Ensure Zabbix Server is running
   service: name=zabbix-server state=started enabled=yes
+  tags:
+    - zabbix
