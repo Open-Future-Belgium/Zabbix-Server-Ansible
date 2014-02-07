@@ -49,13 +49,26 @@
   tags:
     - postgres
 
-- name: install zabbix 2.2 server packages
+- name: install zabbix {{ zbx_version }} server packages
+  yum: name={{ item }} state=present
+  with_items:
+    - zabbix-server
+  tags:
+    - zabbix
+
+- name: install zabbix {{ zbx_version }} server database packages
   yum: name={{ item }} state=present
   with_items:
     - zabbix-server-pgsql
+  tags:
+    - postgres
+
+- name: install zabbix {{ zbx_version }} server web packages
+  yum: name={{ item }} state=present
+  with_items:
     - zabbix-web-pgsql
   tags:
-    - zabbix
+    - http
 
 - name: ensure postgresql server is running
   service: name=postgresql-{{ pg_version }} state=started enabled=yes
