@@ -1,6 +1,10 @@
 ---
 # This playbook will install zabbix server  with a postgresql database and apache webserver
 
+- name: Install libselinux if needed
+  yum: name=libselinux-python state=present
+  when: ansible_selinux == True
+
 - name: Create the Zabbix {{ zbx_version }} Repo
   copy: src=zabbix.repo dest=/etc/yum.repos.d/zabbix.repo
   tags:
@@ -12,15 +16,15 @@
     -zabbix
   
 - name: Import Postgresql Repo
-  yum: name=http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm state=present
+  yum: name={{ pg_repo }} state=present
   tags:
     - postgresql
 
 - name: install postgresql db packages
   yum: name={{ item }} state=present
   with_items:
-    - postgresql{{ pg_version_inst }}-server
-    - postgresql{{ pg_version_inst }}-contrib
+    - postgresql{{ pg_version|replace('.', '') }}-server
+    - postgresql{{ pg_version|replace('.', '') }}-contrib
     - python-psycopg2
   tags:
     - postgresql

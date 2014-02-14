@@ -5,4 +5,4 @@
 
 - name: Install with Yum
   include: RedHat.yml
-  when: ansible_os_family == "RedHat" or ansible_os_family == "Centos"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Centos" 

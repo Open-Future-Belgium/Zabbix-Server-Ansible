@@ -1,7 +1,6 @@
 ---
 # default vars file for pg
 pg_version: 9.3
-pg_version_inst: 93
 pg_locale: 'en_US.UTF-8'
 pg_repo: 'http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm'
 
