@@ -65,7 +65,7 @@ port = {{ pg_cfg_srv_listen_port }} 	# (change requires restart)
 max_connections = {{ pg_cfg_srv_max_connections }}	# (change requires restart)
 # Note:  Increasing max_connections costs ~400 bytes of shared memory per
 # connection slot, plus lock space (see max_locks_per_transaction).
-#superuser_reserved_connections = 3	# (change requires restart)
+superuser_reserved_connections = {{ pg_cfg_srv_superuser_reserved_connections }}	# (change requires restart)
 #unix_socket_directories = '/tmp'	# comma-separated list of directories
 					# (change requires restart)
 #unix_socket_group = ''			# (change requires restart)
@@ -253,7 +253,7 @@ max_stack_depth = {{ pg_cfg_srv_max_stack_depth }} 		# min 100kB
 #enable_hashagg = on
 #enable_hashjoin = on
 #enable_indexscan = on
-#enable_indexonlyscan = on
+enable_indexonlyscan = {{ pg_cfg_srv_enable_indexonlyscan }}
 #enable_material = on
 #enable_mergejoin = on
 #enable_nestloop = on
@@ -268,7 +268,7 @@ max_stack_depth = {{ pg_cfg_srv_max_stack_depth }} 		# min 100kB
 #cpu_tuple_cost = 0.01			# same scale as above
 #cpu_index_tuple_cost = 0.005		# same scale as above
 #cpu_operator_cost = 0.0025		# same scale as above
-#effective_cache_size = 128MB
+effective_cache_size = {{ pg_cfg_srv_effective_cache_size }}
 
 # - Genetic Query Optimizer -
 

@@ -16,8 +16,12 @@ Everything will be installed automatic but at the moment the installation script
 
 Role Variables
 --------------
+All variables can be altered in the defaults directory.
 
-All variables can be altered in the defaults directory. There are files for postgresql, zabbix and apache
+httpd.yml
+main.yml
+postgresql.yml
+zabbix.yml
 
 Dependencies
 ------------

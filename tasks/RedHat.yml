@@ -3,7 +3,7 @@
 
 - name: Install libselinux if needed
   yum: name=libselinux-python state=present
-  when: ansible_selinux == True
+  when: ansible_selinux == false
 
 - name: Create the Zabbix {{ zbx_version }} Repo
   copy: src=zabbix.repo dest=/etc/yum.repos.d/zabbix.repo
