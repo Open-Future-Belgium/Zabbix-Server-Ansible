@@ -56,21 +56,21 @@
 - name: install zabbix {{ zbx_version }} server packages
   yum: name={{ item }} state=present
   with_items:
-    - zabbix-server
+    - zabbix-server-{{ zbx_version }}
   tags:
     - zabbix
 
 - name: install zabbix {{ zbx_version }} server database packages
   yum: name={{ item }} state=present
   with_items:
-    - zabbix-server-pgsql
+    - zabbix-server-pgsql-{{ zbx_version }}
   tags:
     - postgres
 
 - name: install zabbix {{ zbx_version }} server web packages
   yum: name={{ item }} state=present
   with_items:
-    - zabbix-web-pgsql
+    - zabbix-web-pgsql-{{ zbx_version }}
   tags:
     - http
 
@@ -90,17 +90,17 @@
     - postgres
 
 - name: Upload zabbix schema
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-2.2.1/create/schema.sql
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_version }}/create/schema.sql
   tags:
     - postges
 
 - name: Upload zabbix Images
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-2.2.1/create/images.sql
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_version }}/create/images.sql
   tags:
     - postgres
 
 - name: Upload zabbix Data
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-2.2.1/create/data.sql
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_version }}/create/data.sql
   tags:
     - postgres
 
