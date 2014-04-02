@@ -116,7 +116,7 @@
 - name: Update Apache httpd.conf file
   template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf mode=0644
   tags:
-    -http
+    - http
 
 - name: Ensure Apache is running
   service: name=httpd state=started enabled=yes
@@ -127,3 +127,41 @@
   service: name=zabbix-server state=started enabled=yes
   tags:
     - zabbix
+
+- name: Install libsemanage-python for SELinux
+  yum: name=libsemanage-python state=present
+  tags:
+    - zabbix
+
+- name: Set SELinux in Enforcing
+  selinux: policy=targeted state=enforcing
+
+- name: Configure SELinux settings
+  seboolean: name=httpd_can_network_connect state=yes persistent=yes
+
+
+- name: Open the IPTables port 10051 on Zabbix-Server
+  lineinfile: dest=/etc/sysconfig/iptables
+              regexp="^-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT$"
+              line="-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT"
+              insertafter="^:OUTPUT ACCEPT \[\d*:\d*\]$"
+  with_items:
+   - { protocol: tcp, port: 10051 }
+  notify:
+    - restart iptables
+  tags:
+    - zabbix
+
+
+- name: Open the IPTables port 80 on Apache Server
+  lineinfile: dest=/etc/sysconfig/iptables
+              regexp="^-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT$"
+              line="-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT"
+              insertafter="^:OUTPUT ACCEPT \[\d*:\d*\]$"
+  with_items:
+   - { protocol: tcp, port: 80 }
+  notify:
+    - restart iptables
+  tags:
+    - http
+

@@ -9,3 +9,6 @@
   service: name=httpd state=restarted
   tags:
     -http
+
+- name: restart iptables
+  action: service name=iptables state=restarted

@@ -134,7 +134,6 @@ MaxRequestsPerChild  0
 # prevent Apache from glomming onto all bound IP addresses (0.0.0.0)
 #
 #Listen 12.34.56.78:80
-# Listen {{ ansible_eth0.ipv4.address }}:80
 Listen {{ ip_httpd }}:80
 
 #

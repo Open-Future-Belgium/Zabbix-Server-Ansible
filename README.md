@@ -12,7 +12,9 @@ This playbook will install the Zabbix Server with postgresql and apache if neede
 Requirements
 ------------
 
-Everything will be installed automatic but at the moment the installation script only works on Redhat 6.x or Centos 6.x
+At this moment the script only works on Redhat 6.x or Centos 6.x
+The zabbix-server script will install the Zabbix Server package from the zabbix repository with a PostgreSQL database and a Apache webserver.
+
 
 Role Variables
 --------------
@@ -31,8 +33,6 @@ no other roles are used
 Todo
 ----
 1. add config for debian
-2. add selinux
-3. add iptables
 
 License
 -------

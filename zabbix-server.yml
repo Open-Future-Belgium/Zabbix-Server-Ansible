@@ -1,5 +1,5 @@
 ---
-- hosts: vagrantbox
+- hosts: zbbxsrv
   remote_user: root
   vars_files:
     - 'defaults/postgresql.yml'
