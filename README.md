@@ -32,7 +32,7 @@ no other roles are used
 
 Todo
 ----
-1. add config for debian
+1. add config for debian/ubuntu
 
 License
 -------
