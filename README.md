@@ -1,48 +1,38 @@
-Zabbix Server
-=============
+Role Name
+========
 
-This playbook will install the Zabbix Server with postgresql and apache if needed.
-
-1. Edit the zabbix-server.yml file and add replace host
-2. Edit files in directory defaults and change variables to your needs
-3. Install with tags if u want to exclude apache, postgres or zabbix
-4. ansible-playbook zabbix-server.yml --tags "postgres,http,zabbix"
-5. Else just run ansible-playbook zabbix-server.yml
+A brief description of the role goes here.
 
 Requirements
 ------------
 
-At this moment the script only works on Redhat 6.x or Centos 6.x
-The zabbix-server script will install the Zabbix Server package from the zabbix repository with a PostgreSQL database and a Apache webserver.
-
+Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
 
 Role Variables
 --------------
-All variables can be altered in the defaults directory.
 
-httpd.yml
-main.yml
-postgresql.yml
-zabbix.yml
+A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
 Dependencies
 ------------
 
-no other roles are used
+A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
-Todo
-----
-1. add config for debian/ubuntu
+Example Playbook
+-------------------------
+
+Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+
+    - hosts: servers
+      roles:
+         - { role: username.rolename, x: 42 }
 
 License
 -------
 
-GPL V2
+BSD
 
 Author Information
 ------------------
 
-* Patrik Uytterhoeven
-* patrik( at )open-future.be
-* [www.open-future.be](http://www.open-future.be)
-
+An optional section for the role authors to include contact information, or a website (HTML is not allowed).

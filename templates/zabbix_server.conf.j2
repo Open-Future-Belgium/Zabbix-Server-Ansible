@@ -1,0 +1,595 @@
+############ GENERAL PARAMETERS #################
+
+### Option: NodeID
+#	Unique NodeID in distributed setup.
+#	0 - standalone server
+#
+# Mandatory: no
+# Range: 0-999
+# Default:
+NodeID={{zbx_server_NodeID}}
+
+### Option: ListenPort
+#	Listen port for trapper.
+#
+# Mandatory: no
+# Range: 1024-32767
+# Default:
+# ListenPort=10051
+ListenPort={{zbx_server_ListenPort}}
+
+### Option: SourceIP
+#	Source IP address for outgoing connections.
+#
+# Mandatory: no
+# Default:
+{% if zbx_server_SourceIP %}
+SourceIP={{zbx_server_SourceIP}}
+{% else %}
+# SourceIP=
+{% endif %}
+
+### Option: LogFile
+#	Name of log file.
+#	If not set, syslog is used.
+#
+# Mandatory: no
+# Default:
+{% if zbx_server_LogFile %}
+LogFile={{zbx_server_LogFile}}
+{% else %}
+# LogFile=
+{% endif %}
+
+
+### Option: LogFileSize
+#	Maximum size of log file in MB.
+#	0 - disable automatic log rotation.
+#
+# Mandatory: no
+# Range: 0-1024
+# Default:
+# LogFileSize=1
+
+LogFileSize={{zbx_server_LogFileSize}}
+
+### Option: DebugLevel
+#	Specifies debug level
+#	0 - no debug
+#	1 - critical information
+#	2 - error information
+#	3 - warnings
+#	4 - for debugging (produces lots of information)
+#
+# Mandatory: no
+# Range: 0-4
+# Default:
+DebugLevel={{zbx_server_DebugLevel}}
+
+### Option: PidFile
+#	Name of PID file.
+#
+# Mandatory: no
+# Default:
+# PidFile=/tmp/zabbix_server.pid
+
+PidFile={{zbx_server_PidFile}}
+
+### Option: DBHost
+#	Database host name.
+#	If set to localhost, socket is used for MySQL.
+#	If set to empty string, socket is used for PostgreSQL.
+#
+# Mandatory: no
+# Default:
+DBHost={{zbx_server_DBHost}}
+
+### Option: DBName
+#	Database name.
+#	For SQLite3 path to database file must be provided. DBUser and DBPassword are ignored.
+#
+# Mandatory: yes
+# Default:
+# DBName=
+
+DBName={{zbx_server_DBName}}
+
+### Option: DBSchema
+#	Schema name. Used for IBM DB2.
+#
+# Mandatory: no
+# Default:
+{% if zbx_server_DBSchema %}
+DBSchema={{zbx_server_DBSchema}}
+{% else %}
+# DBSchema=
+{% endif %}
+
+### Option: DBUser
+#	Database user. Ignored for SQLite.
+#
+# Mandatory: no
+# Default:
+# DBUser=
+
+DBUser={{zbx_server_DBUser}}
+
+### Option: DBPassword
+#	Database password. Ignored for SQLite.
+#	Comment this line if no password is used.
+#
+# Mandatory: no
+# Default:
+# DBPassword=
+DBPassword={{zbx_server_DBPassword}}
+
+### Option: DBSocket
+#	Path to MySQL socket.
+#
+# Mandatory: no
+# Default:
+# DBSocket=/tmp/mysql.sock
+
+DBSocket={{zbx_server_DBSocket}}
+
+### Option: DBPort
+#	Database port when not using local socket. Ignored for SQLite.
+#
+# Mandatory: no
+# Range: 1024-65535
+# Default (for MySQL):
+{% if zbx_server_DBPort %}
+DBPort={{zbx_server_DBPort}}
+{% else %}
+# DBPort=3306
+{% endif %}
+
+############ ADVANCED PARAMETERS ################
+
+### Option: StartPollers
+#	Number of pre-forked instances of pollers.
+#
+# Mandatory: no
+# Range: 0-1000
+# Default:
+StartPollers={{zbx_server_StartPollers}}
+
+### Option: StartIPMIPollers
+#	Number of pre-forked instances of IPMI pollers.
+#
+# Mandatory: no
+# Range: 0-1000
+# Default:
+{% if zbx_server_StartIPMIPollers %}
+StartIPMIPollers={{zbx_server_StartIPMIPollers}}
+{% else %}
+# StartIPMIPollers=0
+{% endif %}
+
+### Option: StartPollersUnreachable
+#	Number of pre-forked instances of pollers for unreachable hosts (including IPMI).
+#
+# Mandatory: no
+# Range: 0-1000
+# Default:
+StartPollersUnreachable={{zbx_server_StartPollersUnreachable}}
+
+### Option: StartTrappers
+#	Number of pre-forked instances of trappers.
+#	Trappers accept incoming connections from Zabbix sender, active agents, active proxies and child nodes.
+#	At least one trapper process must be running to display server availability in the frontend.
+#
+# Mandatory: no
+# Range: 0-1000
+# Default:
+StartTrappers={{zbx_server_StartTrappers}}
+
+### Option: StartPingers
+#	Number of pre-forked instances of ICMP pingers.
+#
+# Mandatory: no
+# Range: 0-1000
+# Default:
+StartPingers={{zbx_server_StartPingers}}
+
+### Option: StartDiscoverers
+#	Number of pre-forked instances of discoverers.
+#
+# Mandatory: no
+# Range: 0-250
+# Default:
+StartDiscoverers={{zbx_server_StartDiscoverers}}
+
+### Option: StartHTTPPollers
+#	Number of pre-forked instances of HTTP pollers.
+#
+# Mandatory: no
+# Range: 0-1000
+# Default:
+StartHTTPPollers={{zbx_server_StartHTTPPollers}}
+
+### Option: StartTimers
+#	Number of pre-forked instances of timers.
+#	Timers process time-based trigger functions and maintenance periods.
+#	Only the first timer process handles the maintenance periods.
+#
+# Mandatory: no
+# Range: 1-1000
+# Default:
+StartTimers={{zbx_server_StartTimers}}
+
+### Option: JavaGateway
+#	IP address (or hostname) of Zabbix Java gateway.
+#	Only required if Java pollers are started.
+#
+# Mandatory: no
+# Default:
+{% if zbx_server_JavaGateway %}
+JavaGateway={{zbx_server_JavaGateway}}
+{% else %}
+# JavaGateway=
+{% endif %}
+
+### Option: JavaGatewayPort
+#	Port that Zabbix Java gateway listens on.
+#
+# Mandatory: no
+# Range: 1024-32767
+# Default:
+JavaGatewayPort={{zbx_server_JavaGatewayPort}}
+
+### Option: StartJavaPollers
+#	Number of pre-forked instances of Java pollers.
+#
+# Mandatory: no
+# Range: 0-1000
+# Default:
+StartJavaPollers={{zbx_server_StartJavaPollers}}
+
+### Option: StartVMwareCollectors
+#	Number of pre-forked vmware collector instances.
+#
+# Mandatory: no
+# Range: 0-250
+# Default:
+StartVMwareCollectors={{zbx_server_StartVMwareCollectors}}
+
+### Option: VMwareFrequency
+#	How often Zabbix will connect to VMware service to obtain a new data.
+#
+# Mandatory: no
+# Range: 10-86400
+# Default:
+VMwareFrequency={{zbx_server_VMwareFrequency}}
+
+### Option: VMwareCacheSize
+#	Size of VMware cache, in bytes.
+#	Shared memory size for storing VMware data.
+#	Only used if VMware collectors are started.
+#
+# Mandatory: no
+# Range: 256K-2G
+# Default:
+VMwareCacheSize={{zbx_server_VMwareCacheSize}}
+
+### Option: SNMPTrapperFile
+#	Temporary file used for passing data from SNMP trap daemon to the server.
+#	Must be the same as in zabbix_trap_receiver.pl or SNMPTT configuration file.
+#
+# Mandatory: no
+# Default:
+# SNMPTrapperFile=/tmp/zabbix_traps.tmp
+
+SNMPTrapperFile={{zbx_server_SNMPTrapperFile}}
+
+### Option: StartSNMPTrapper
+#	If 1, SNMP trapper process is started.
+#
+# Mandatory: no
+# Range: 0-1
+# Default:
+StartSNMPTrapper={{zbx_server_StartSNMPTrapper}}
+
+### Option: ListenIP
+#	List of comma delimited IP addresses that the trapper should listen on.
+#	Trapper will listen on all network interfaces if this parameter is missing.
+#
+# Mandatory: no
+# Default:
+{% if zbx_server_ListenIP %}
+ListenIP={{zbx_server_ListenIP}}
+{% else %}
+# ListenIP=0.0.0.0
+# ListenIP=127.0.0.1
+{% endif %}
+
+
+### Option: HousekeepingFrequency
+#	How often Zabbix will perform housekeeping procedure (in hours).
+#	Housekeeping is removing unnecessary information from history, alert, and alarms tables.
+#
+# Mandatory: no
+# Range: 1-24
+# Default:
+HousekeepingFrequency={{zbx_server_HousekeepingFrequency}}
+
+### Option: MaxHousekeeperDelete
+#	The table "housekeeper" contains "tasks" for housekeeping procedure in the format:
+#	[housekeeperid], [tablename], [field], [value].
+#	No more than 'MaxHousekeeperDelete' rows (corresponding to [tablename], [field], [value])
+#	will be deleted per one task in one housekeeping cycle.
+#	SQLite3 does not use this parameter, deletes all corresponding rows without a limit.
+#	If set to 0 then no limit is used at all. In this case you must know what you are doing!
+#
+# Mandatory: no
+# Range: 0-1000000
+# Default:
+MaxHousekeeperDelete={{zbx_server_MaxHousekeeperDelete}}
+
+### Option: SenderFrequency
+#	How often Zabbix will try to send unsent alerts (in seconds).
+#
+# Mandatory: no
+# Range: 5-3600
+# Default:
+SenderFrequency={{zbx_server_SenderFrequency}}
+
+### Option: CacheSize
+#	Size of configuration cache, in bytes.
+#	Shared memory size for storing host, item and trigger data.
+#
+# Mandatory: no
+# Range: 128K-2G
+# Default:
+CacheSize={{zbx_server_CacheSize}}
+
+### Option: CacheUpdateFrequency
+#	How often Zabbix will perform update of configuration cache, in seconds.
+#
+# Mandatory: no
+# Range: 1-3600
+# Default:
+CacheUpdateFrequency={{zbx_server_CacheUpdateFrequency}}
+
+### Option: StartDBSyncers
+#	Number of pre-forked instances of DB Syncers
+#
+# Mandatory: no
+# Range: 1-100
+# Default:
+StartDBSyncers={{zbx_server_StartDBSyncers}}
+
+### Option: HistoryCacheSize
+#	Size of history cache, in bytes.
+#	Shared memory size for storing history data.
+#
+# Mandatory: no
+# Range: 128K-2G
+# Default:
+HistoryCacheSize={{zbx_server_HistoryCacheSize}}
+
+### Option: TrendCacheSize
+#	Size of trend cache, in bytes.
+#	Shared memory size for storing trends data.
+#
+# Mandatory: no
+# Range: 128K-2G
+# Default:
+TrendCacheSize={{zbx_server_TrendCacheSize}}
+
+### Option: HistoryTextCacheSize
+#	Size of text history cache, in bytes.
+#	Shared memory size for storing character, text or log history data.
+#
+# Mandatory: no
+# Range: 128K-2G
+# Default:
+HistoryTextCacheSize={{zbx_server_HistoryTextCacheSize}}
+
+### Option: ValueCacheSize
+#	Size of history value cache, in bytes.
+#	Shared memory size for caching item history data requests
+#	Setting to 0 disables value cache.
+#
+# Mandatory: no
+# Range: 0,128K-64G
+# Default:
+ValueCacheSize={{zbx_server_ValueCacheSize}}
+
+### Option: NodeNoEvents
+#	If set to '1' local events won't be sent to master node.
+#	This won't impact ability of this node to propagate events from its child nodes.
+#
+# Mandatory: no
+# Range: 0-1
+# Default:
+NodeNoEvents={{zbx_server_NodeNoEvents}}
+
+### Option: NodeNoHistory
+#	If set to '1' local history won't be sent to master node.
+#	This won't impact ability of this node to propagate history from its child nodes.
+#
+# Mandatory: no
+# Range: 0-1
+# Default:
+NodeNoHistory={{zbx_server_NodeNoHistory}}
+
+### Option: Timeout
+#	Specifies how long we wait for agent, SNMP device or external check (in seconds).
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+Timeout={{zbx_server_Timeout}}
+
+### Option: TrapperTimeout
+#	Specifies how many seconds trapper may spend processing new data.
+#
+# Mandatory: no
+# Range: 1-300
+# Default:
+TrapperTimeout={{zbx_server_TrapperTimeout}}
+
+### Option: UnreachablePeriod
+#	After how many seconds of unreachability treat a host as unavailable.
+#
+# Mandatory: no
+# Range: 1-3600
+# Default:
+UnreachablePeriod={{zbx_server_UnreachablePeriod}}
+
+### Option: UnavailableDelay
+#	How often host is checked for availability during the unavailability period, in seconds.
+#
+# Mandatory: no
+# Range: 1-3600
+# Default:
+UnavailableDelay={{zbx_server_UnavailableDelay}}
+
+### Option: UnreachableDelay
+#	How often host is checked for availability during the unreachability period, in seconds.
+#
+# Mandatory: no
+# Range: 1-3600
+# Default:
+UnreachableDelay={{zbx_server_UnreachableDelay}}
+
+### Option: AlertScriptsPath
+#	Full path to location of custom alert scripts.
+#	Default depends on compilation options.
+#
+# Mandatory: no
+# Default:
+# AlertScriptsPath=${datadir}/zabbix/alertscripts
+
+AlertScriptsPath={{zbx_server_AlertScriptsPath}}
+
+### Option: ExternalScripts
+#	Full path to location of external scripts.
+#	Default depends on compilation options.
+#
+# Mandatory: no
+# Default:
+# ExternalScripts=${datadir}/zabbix/externalscripts
+
+ExternalScripts={{zbx_server_ExternalScripts}}
+
+### Option: FpingLocation
+#	Location of fping.
+#	Make sure that fping binary has root ownership and SUID flag set.
+#
+# Mandatory: no
+# Default:
+FpingLocation={{zbx_server_FpingLocation}}
+
+### Option: Fping6Location
+#	Location of fping6.
+#	Make sure that fping6 binary has root ownership and SUID flag set.
+#	Make empty if your fping utility is capable to process IPv6 addresses.
+#
+# Mandatory: no
+# Default:
+Fping6Location={{zbx_server_Fping6Location}}
+
+### Option: SSHKeyLocation
+#	Location of public and private keys for SSH checks and actions.
+#
+# Mandatory: no
+# Default:
+{% if zbx_server_SSHKeyLocation %}
+SSHKeyLocation={{zbx_server_SSHKeyLocation}}
+{% else %}
+# SSHKeyLocation=
+{% endif %}
+
+### Option: LogSlowQueries
+#	How long a database query may take before being logged (in milliseconds).
+#	Only works if DebugLevel set to 3 or 4.
+#	0 - don't log slow queries.
+#
+# Mandatory: no
+# Range: 1-3600000
+# Default:
+LogSlowQueries={{zbx_server_LogSlowQueries}}
+
+### Option: TmpDir
+#	Temporary directory.
+#
+# Mandatory: no
+# Default:
+TmpDir={{zbx_server_TmpDir}}
+
+### Option: StartProxyPollers
+#	Number of pre-forked instances of pollers for passive proxies.
+#
+# Mandatory: no
+# Range: 0-250
+# Default:
+StartProxyPollers={{zbx_server_StartProxyPollers}}
+
+### Option: ProxyConfigFrequency
+#	How often Zabbix Server sends configuration data to a Zabbix Proxy in seconds.
+#	This parameter is used only for proxies in the passive mode.
+#
+# Mandatory: no
+# Range: 1-3600*24*7
+# Default:
+ProxyConfigFrequency={{zbx_server_ProxyConfigFrequency}}
+
+### Option: ProxyDataFrequency
+#	How often Zabbix Server requests history data from a Zabbix Proxy in seconds.
+#	This parameter is used only for proxies in the passive mode.
+#
+# Mandatory: no
+# Range: 1-3600
+# Default:
+ProxyDataFrequency={{zbx_server_ProxyDataFrequency}}
+
+### Option: AllowRoot
+#	Allow the server to run as 'root'. If disabled and the server is started by 'root', the server
+#	will try to switch to user 'zabbix' instead. Has no effect if started under a regular user.
+#	0 - do not allow
+#	1 - allow
+#
+# Mandatory: no
+# Default:
+AllowRoot={{zbx_server_AllowRoot}}
+
+### Option: Include
+#	You may include individual files or all files in a directory in the configuration file.
+#	Installing Zabbix will create include directory in /usr/local/etc, unless modified during the compile time.
+#
+# Mandatory: no
+# Default:
+{% for line in zbx_server_Include %}
+Include={line}
+{% else %}
+# Include=
+{% endfor %}
+
+# Include=/usr/local/etc/zabbix_server.general.conf
+# Include=/usr/local/etc/zabbix_server.conf.d/
+
+####### LOADABLE MODULES #######
+
+### Option: LoadModulePath
+#	Full path to location of server modules.
+#	Default depends on compilation options.
+#
+# Mandatory: no
+# Default:
+LoadModulePath={{zbx_server_LoadModulePath}}
+
+### Option: LoadModule
+#	Module to load at server startup. Modules are used to extend functionality of the server.
+#	Format: LoadModule=<module.so>
+#	The modules must be located in directory specified by LoadModulePath.
+#	It is allowed to include multiple LoadModule parameters.
+#
+# Mandatory: no
+# Default:
+{% for line in zbx_server_LoadModule %}
+LoadModule={{zbx_server_LoadModule}}
+{% else %}
+# LoadModule=
+{% endfor %}

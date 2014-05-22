@@ -1,14 +1,18 @@
 ---
-# handlers file for postgresql
-- name: restart postgresql
-  service: name=postgresql-{{ pg_version }} state=restarted
-  tags:
-    -postgres
-
-- name: restart httpd
-  service: name=httpd state=restarted
-  tags:
-    -http
+# handlers file for zabbix-server
 
 - name: restart iptables
-  action: service name=iptables state=restarted
+  service:
+    name=iptables
+    state=restarted
+
+- name: start zabbix-server
+  service:
+    name=zabbix-server
+    state=started
+    enabled=yes
+
+- name: restart httpd
+  service:
+    name=httpd
+    state=restarted

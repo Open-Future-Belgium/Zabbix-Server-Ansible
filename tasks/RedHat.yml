@@ -1,167 +1,89 @@
 ---
-# This playbook will install zabbix server  with a postgresql database and apache webserver
+# tasks file for zabbix-server
+- name: Install Policy Coreutils package
+  yum: name=policycoreutils state=present
 
-- name: Install libselinux if needed
-  yum: name=libselinux-python state=present
-  when: ansible_selinux == false
+- name: Install Zabbix Repository
+  yum: name={{zbx_server_repo}} state=present
+  when: zbx_server_repo_Enabled == 1
 
-- name: Create the Zabbix {{ zbx_version }} Repo
-  copy: src=zabbix.repo dest=/etc/yum.repos.d/zabbix.repo
-  tags:
-    - zabbix
-
-- name: Create the GPG key for zabbix {{ zbx_version }}
-  copy: src=RPM-GPG-KEY-ZABBIX dest=/etc/pki/rpm-gpg
-  tags:
-    -zabbix
-  
-- name: Import Postgresql Repo
-  yum: name={{ pg_repo }} state=present
-  tags:
-    - postgresql
-
-- name: install postgresql db packages
-  yum: name={{ item }} state=present
+- name: Install Zabbix PostgreSQL packages
+  yum: name={{item}} state=present
   with_items:
-    - postgresql{{ pg_version|replace('.', '') }}-server
-    - postgresql{{ pg_version|replace('.', '') }}-contrib
-    - python-psycopg2
-  tags:
-    - postgresql
-  
-- name: install web packages
-  yum: name={{ item }} state=present
+    - zabbix-server-pgsql-{{zbx_server_Version}}
+  when: zbx_server_PostgreSQL == 1
+
+- name: Install Zabbix Mysql Packages
+  yum: name={{item}} state=present
   with_items:
-    - httpd
-    - php
-  tags:
-    -http
+    - zabbix-server-mysql-{{zbx_server_Version}}
+  when: zbx_server_PostgreSQL == 0
 
-- name: Initialise Postgresql Database
-  command: service postgresql-{{ pg_version }} initdb
-  tags: 
-    - postgres 
-
-- name: Update pg_hba.conf file
-  template: src=pg_hba.conf.j2 dest=/var/lib/pgsql/{{ pg_version }}/data/pg_hba.conf owner={{ pg_admin_user }} group={{ pg_admin_user }} mode=0640
-  tags:
-    - postgres
-
-- name: Update postgres.conf file
-  template: src=main.conf.j2 dest=/var/lib/pgsql/{{ pg_version }}/data/postgresql.conf owner={{ pg_admin_user }} group={{ pg_admin_user }} mode=0644
-  notify: restart postgresql
-  tags:
-    - postgres
-
-- name: install zabbix {{ zbx_version }} server packages
-  yum: name={{ item }} state=present
+- name: Install Zabbix PostgreSQL Web Packages
+  yum: name={{item}} state=present
   with_items:
-    - zabbix-server-{{ zbx_version }}
-  tags:
-    - zabbix
+    - zabbix-web-pgsql-{{zbx_server_Version}}
+  when: zbx_server_PostgreSQL == 1 and zbx_server_Webserver == 1
+  notify: start zabbix-server
 
-- name: install zabbix {{ zbx_version }} server database packages
-  yum: name={{ item }} state=present
+- name: Copy Zabbix Server Config
+  template: src=zabbix_server.conf.j2 dest=/etc/zabbix/zabbix_server.conf
+
+- name: Copy Zabbix Server PHP Config
+  template: src=zabbix.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf
+  when: zbx_server_Webserver == 1
+
+- name: Install Zabbix Mysql Web Packages
+  yum: name={{item}} state=present
   with_items:
-    - zabbix-server-pgsql-{{ zbx_version }}
-  tags:
-    - postgres
-
-- name: install zabbix {{ zbx_version }} server web packages
-  yum: name={{ item }} state=present
-  with_items:
-    - zabbix-web-pgsql-{{ zbx_version }}
-  tags:
-    - http
-
-- name: ensure postgresql server is running
-  service: name=postgresql-{{ pg_version }} state=started enabled=yes
-  tags:
-    - postgres
-
-- name: Create the Zabbix User and Database
-  include: postgresql.yml
-  tags: 
-    - postgres
+    - zabbix-web-pgsql-{{zbx_server_Version}}
+  when: zbx_server_PostgreSQL == 0 and zbx_server_Webserver == 1
+  notify: start zabbix-server
 
 - name: Add .pgpass file
   template: src=.pgpass.j2 dest=/root/.pgpass mode=0600
-  tags:
-    - postgres
 
 - name: Upload zabbix schema
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_version }}/create/schema.sql
-  tags:
-    - postges
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_server_Version }}/create/schema.sql
 
 - name: Upload zabbix Images
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_version }}/create/images.sql
-  tags:
-    - postgres
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_server_Version }}/create/images.sql
 
 - name: Upload zabbix Data
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_version }}/create/data.sql
-  tags:
-    - postgres
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_server_Version }}/create/data.sql
 
 - name: Cleanup .pgpass file
   file: path=/root/.pgpass state=absent
 
-- name: Update zabbix.conf file
-  template: src=zabbix.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf mode=0640
-  notify: restart httpd
-  tags:
-    - http
-
-- name: Update Apache httpd.conf file
-  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf mode=0644
-  tags:
-    - http
-
-- name: Ensure Apache is running
-  service: name=httpd state=started enabled=yes
-  tags:
-    - http
-
-- name: Ensure Zabbix Server is running
-  service: name=zabbix-server state=started enabled=yes
-  tags:
-    - zabbix
-
-- name: Install libsemanage-python for SELinux
-  yum: name=libsemanage-python state=present
-  tags:
-    - zabbix
-
-- name: Set SELinux in Enforcing
-  selinux: policy=targeted state=enforcing
-
-- name: Configure SELinux settings
-  seboolean: name=httpd_can_network_connect state=yes persistent=yes
-
 
 - name: Open the IPTables port 10051 on Zabbix-Server
   lineinfile: dest=/etc/sysconfig/iptables
-              regexp="^-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT$"
-              line="-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT"
-              insertafter="^:OUTPUT ACCEPT \[\d*:\d*\]$"
+            regexp="^-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT$"
+            line="-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT"
+            insertafter="^:OUTPUT ACCEPT \[\d*:\d*\]$"
   with_items:
-   - { protocol: tcp, port: 10051 }
+    - { protocol: tcp, port: 10051 }
   notify:
     - restart iptables
-  tags:
-    - zabbix
 
-
-- name: Open the IPTables port 80 on Apache Server
+- name: Open the IPTables port 80 on Zabbix-Server
   lineinfile: dest=/etc/sysconfig/iptables
-              regexp="^-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT$"
-              line="-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT"
-              insertafter="^:OUTPUT ACCEPT \[\d*:\d*\]$"
+            regexp="^-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT$"
+            line="-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT"
+            insertafter="^:OUTPUT ACCEPT \[\d*:\d*\]$"
   with_items:
-   - { protocol: tcp, port: 80 }
+    - { protocol: tcp, port: 80 }
+
+- name: Configure SELinux Policy httpd
+  command: setsebool -P httpd_can_network_connect on
+
+- name: Configure SELinux Policy zabbix
+  command: setsebool -P zabbix_can_network on
+
   notify:
     - restart iptables
-  tags:
-    - http
+  when: zbx_server_Webserver == 1
 
+  notify:
+    - restart httpd
+  when: zbx_server_Webserver == 1

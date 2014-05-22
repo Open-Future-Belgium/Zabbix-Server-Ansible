@@ -1,2 +1,91 @@
 ---
+# defaults file for zabbix-server
+
+# Zabbix Repository
+zbx_server_repo_Enabled: 1                                      # Add 0 in case you want to use your own repo
+zbx_server_repo: "http://repo.zabbix.com/zabbix/2.2/rhel/6/x86_64/zabbix-release-2.2-1.el6.noarch.rpm"
+
+
+# Zabbix Server Settings
+zbx_server_PostgreSQL: 1                                        # 1 for PostgreSQL 0 for MySQL Database
+zbx_server_Webserver: 1                                         # 1 To install the Webserver 0 to install only the Zabbix Server
+
 # defaults file for Zabbix-Server
+# Zabbix Server Version
+zbx_server_Version: "2.2.3"
+
+pg_cfg_srv_listen_port: '5432'
+
+# General Zabbix Server Parameters
+############ GENERAL PARAMETERS #################
+
+zbx_server_NodeID: 0                                             # Unique NodeID in distributed setup 0=Standalone Server
+zbx_server_ListenPort: 10051                                     # Listen port for trapper
+zbx_server_SourceIP:                                             # Source IP address for outgoing connections
+zbx_server_LogFile: "/var/log/zabbix/zabbix_server.log"          # Name of log file if not set syslog is used
+zbx_server_LogFileSize: 0                                        # Maximum size of log file in MB. 0 = Disabled auto log rotate
+zbx_server_DebugLevel: 1                                         # DebugLevel 0=no debug, 1=critical, 2=error info, 3=warnings, 4=debug
+zbx_server_PidFile: "/var/run/zabbix/zabbix_server.pid"          # Location of the PID file.
+zbx_server_DBHost: localhost                                     # If set to localhost, socket is used for MySQL, if set empty socket is used for PostgreSQL
+zbx_server_DBName: zabbix                                        # DBName For SQLite3 path to database file must be provided. DBUser and DBPassword are ignored
+zbx_server_DBSchema:                                             # Schema name. Used only for IBM DB2
+zbx_server_DBUser: zabbix                                        # Database Username. Ignored for SQLite.
+zbx_server_DBPassword: zabbix                                    # Database password. Ignored for SQLite.
+zbx_server_DBSocket: "/var/lib/mysql/mysql.sock"                 # Path to MySQL Socket
+zbx_server_DBPort:                                               # Database port when not using local socket. Ignored for SQLite
+
+############ ADVANCED PARAMETERS ################
+zbx_server_StartPollers: 6                                       # Number of pre-forked instances of pollers
+zbx_server_StartIPMIPollers:                                     # Number of pre-forked instances of IPMI pollers
+zbx_server_StartPollersUnreachable: 1                            # Number of pre-forked instances of pollers for unreachable hosts (including IPMI)
+zbx_server_StartTrappers: 6                                      # Number of pre-forked instances of trappers.
+zbx_server_StartPingers: 1                                       # Number of pre-forked instances of ICMP pingers
+zbx_server_StartDiscoverers: 1                                   # Number of pre-forked instances of discoverers
+zbx_server_StartHTTPPollers: 1                                   # Number of pre-forked instances of HTTP pollers
+zbx_server_StartTimers: 1                                        # Number of pre-forked instances of timers
+zbx_server_JavaGateway:                                          # IP address (or hostname) of Zabbix Java gateway
+zbx_server_JavaGatewayPort: 10052                                # Port that Zabbix Java gateway listens on
+zbx_server_StartJavaPollers: 0                                   # Number of pre-forked instances of Java pollers
+zbx_server_StartVMwareCollectors: 0                              # Number of pre-forked vmware collector instances (0-250)
+zbx_server_VMwareFrequency: 60                                   # How often Zabbix will connect to VMware service to obtain a new data (10 - 86400)
+zbx_server_VMwareCacheSize: '8M'                                 # Size of VMware cache, in bytes Shared memory size for storing VMware data (256k-2G)
+zbx_server_SNMPTrapperFile: '/tmp/snmptt.log'                    # Temporary file used for passing data from SNMP trap daemon to the server
+zbx_server_StartSNMPTrapper: 1                                   # If 1, SNMP trapper process is started
+zbx_server_ListenIP:                                             # List of comma delimited IP addresses the trapper should listen on. If missing listen on all
+zbx_server_HousekeepingFrequency: 1                              # How often Zabbix will perform housekeeping procedure (in hours) 1 - 24
+zbx_server_MaxHousekeeperDelete: 500                             # No more than 'MaxHousekeeperDelete' rows will be deleted (0 - 1000000) 0=no limit
+zbx_server_SenderFrequency: 30                                   # How often Zabbix will try to send unsent alerts (in seconds) 5-3600
+zbx_server_CacheSize: '8M'                                       # Size of configuration cache, in bytes.(128k-2G)
+zbx_server_CacheUpdateFrequency: 60                              # How often Zabbix will perform update of configuration cache, in seconds
+zbx_server_StartDBSyncers: 4                                     # Number of pre-forked instances of DB Syncers
+zbx_server_HistoryCacheSize: '8M'                                # Size of history cache, in bytes (128k - 2G)
+zbx_server_TrendCacheSize: '4M'                                  # Size of trend cache, in bytes. (128k - 2G)
+zbx_server_HistoryTextCacheSize: '16M'                           # Size of text history cache, in bytes (128k - 2G)
+zbx_server_ValueCacheSize: '8M'                                  # Size of history value cache, in bytes (0,128K-64G)
+zbx_server_NodeNoEvents: 0                                       # If set to '1' local events won't be sent to master node
+zbx_server_NodeNoHistory: 0                                      # If set to '1' local history won't be sent to master node
+zbx_server_Timeout: 3                                            # Specifies how long we wait for agent, SNMP device or external check (in seconds 1-30)
+zbx_server_TrapperTimeout: 300                                   # Specifies how many seconds trapper may spend processing new data (1-300)
+zbx_server_UnreachablePeriod: 45                                 # After how many seconds of unreachability treat a host as unavailable (1-3600)
+zbx_server_UnavailableDelay: 60                                  # How often host is checked for availability during the unavailability period, in seconds
+zbx_server_UnreachableDelay: 15                                  # How often host is checked for availability during the unreachability period, in seconds
+zbx_server_AlertScriptsPath: '/usr/lib/zabbix/alertscripts'      # Full path to location of custom alert scripts
+zbx_server_ExternalScripts: '/usr/lib/zabbix/externalscripts'    # Full path to location of external scripts
+zbx_server_FpingLocation: '/usr/sbin/fping'                      # Location of fping
+zbx_server_Fping6Location: '/usr/sbin/fping6'                    # Location of fping6
+zbx_server_SSHKeyLocation:                                       # Location of public and private keys for SSH checks and actions
+zbx_server_LogSlowQueries: 0                                     # How long a database query may take before being logged (in milliseconds 1-3600000)
+zbx_server_TmpDir: '/tmp'                                        # Temporary directory.
+zbx_server_StartProxyPollers: 1                                  # Number of pre-forked instances of pollers for passive proxies
+zbx_server_ProxyConfigFrequency: '3600'                          # How often Zabbix Server sends configuration data to a Zabbix Proxy in seconds.
+zbx_server_ProxyDataFrequency: 1                                 # How often Zabbix Server requests history data from a Zabbix Proxy in seconds.
+zbx_server_AllowRoot: 0                                          # Allow the server to run as 'root' if 0 server will try to run as zabbix
+zbx_server_Include: []                                           # You may include individual files or all files in a directory in the configuration file
+#                - Include=/usr/local/etc/zabbix_server.general.conf
+#                - Include=/usr/local/etc/zabbix_server.conf.d/
+
+
+####### LOADABLE MODULES #######
+
+zbx_server_LoadModulePath: '${libdir}/modules'                   # Full path to location of server modules
+zbx_server_LoadModule: []                                        # Module to load at server startup. Modules are used to extend functionality of the server
