@@ -20,18 +20,18 @@ Role Variables
 --------------
 All variables can be altered in the defaults directory.
 
-httpd.yml
-main.yml
-postgresql.yml
-zabbix.yml
+* httpd.yml
+* main.yml
+* postgresql.yml
+* zabbix.yml
 
 Dependencies
 ------------
 
-Database like mysql or postgresql needs to be installed seperate
-Apache or another webserver needs to be installed seperate
-For Postgresql you can make use of my Postgresql playbook
-ansible-galaxy install patrik.uytterhoeven.PostgreSQL-For-RHEL6x
+* Database like mysql or postgresql needs to be installed seperate
+* Apache or another webserver needs to be installed seperate
+* For Postgresql you can make use of my Postgresql playbook
+* ansible-galaxy install patrik.uytterhoeven.PostgreSQL-For-RHEL6x
 
 Todo
 ----
