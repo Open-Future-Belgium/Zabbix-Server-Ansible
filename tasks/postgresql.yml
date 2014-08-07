@@ -1,16 +1,54 @@
 ---
-# Create User Zabbix
-- postgresql_user: name='{{ zbx_user }}' password='{{ zbx_passwd }}' 
+# Create Zabbix Database in PostgreSQL
 
-# Create a new database with name "zabbix" and specific encoding and locale
-# settings. If a template different from "template0" is specified, encoding
-# and locale settings must match those of the template.
-- postgresql_db: name='{{ zbx_dbname }}'
-                 encoding='UTF-8'
-                 lc_collate='en_US.UTF-8'
-                 lc_ctype='en_US.UTF-8'
-                 template='template0'
-                 owner='{{ zbx_user }}'
+- name: Add PostgreSQL .pgpass file
+  template: src=.pgpass.j2 dest=/root/.pgpass mode=0600
 
-# Add user Zabbix to database 
-- postgresql_user: db='{{ zbx_dbname }}' name='{{ zbx_user }}' password='{{ zbx_passwd }}' 
+- name: Upload PostgreSQL zabbix schema
+  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_server_Version }}/create/{{item}}
+  with_items:
+        - schema.sql
+        - images.sql
+        - data.sql
+
+- name: Cleanup PostgreSQL .pgpass file
+  file: path=/root/.pgpass state=absent
+
+#### ADD PGSQL DB & USER ####
+#- name: Databases | Make sure the PostgreSQL databases are present
+#  postgresql_db:
+#    name: "{{ item.name }}"
+#    encoding: "{{postgresql_encoding}}"
+#    lc_collate: "{{postgresql_locale}}"
+#    lc_ctype: "{{postgresql_locale}}"
+#    template: "template0"
+#    state: present
+#  with_items: postgresql_databases
+#  when: postgresql_databases|length > 0
+
+#- name: Databases | Add hstore to the databases with the requirement
+#  sudo: yes
+#  sudo_user: "{{postgresql_admin_user}}"
+#  shell: "psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hstore;"
+#  with_items: postgresql_databases
+#  when: "item.hstore is defined and item.hstore == 'yes'"
+#
+#- name: PostgreSQL | Make sure the PostgreSQL users are present
+#  postgresql_user:
+#    name: "{{item.name}}"
+#    password: "{{item.pass | default('pass')}}"
+#    state: present
+#    login_host: "{{item.host | default('localhost')}}"
+#  with_items: postgresql_users
+#  when: postgresql_users|length > 0
+#
+#- name: PostgreSQL | Update the user privileges
+#  postgresql_user:
+#    name: "{{item.name}}"
+#    db: "{{item.db}}"
+#    priv: "{{item.priv | default('ALL')}}"
+#    state: present
+#    login_host: "{{item.host | default('localhost')}}"
+#  with_items: postgresql_user_privileges
+#  when: postgresql_users|length > 0
+

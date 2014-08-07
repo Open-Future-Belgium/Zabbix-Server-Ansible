@@ -1,7 +1,7 @@
 Zabbix Server
 =============
 
-This playbook will install the Zabbix Server with postgresql and apache if needed.
+This playbook will install the Zabbix Server
 
 1. Edit the zabbix-server.yml file and add replace host
 2. Edit files in directory defaults and change variables to your needs
@@ -9,12 +9,18 @@ This playbook will install the Zabbix Server with postgresql and apache if neede
 4. ansible-playbook zabbix-server.yml --tags "postgres,http,zabbix"
 5. Else just run ansible-playbook zabbix-server.yml
 
+Version
+-------
+7/8/2014
+
+
 Requirements
 ------------
 
 At this moment the script only works on Redhat 6.x or Centos 6.x
-The zabbix-server script will install the Zabbix Server package from the zabbix repository with a PostgreSQL database and a Apache webserver.
-
+This script works with PostgreSQL and MySQL
+You still need ansible playbooks to install PostgreSQL or MySQL and Apache
+Mysql will create a Database Postgresql expects the Db to be there (todo)
 
 Role Variables
 --------------

@@ -22,6 +22,13 @@
   when: zbx_server_PostgreSQL == 1 and zbx_server_Webserver == 1
   notify: start zabbix-server
 
+- name: Install Zabbix Mysql Web Packages
+  yum: name={{item}} state=present
+  with_items:
+   - zabbix-web-mysql-{{zbx_server_Version}}
+  when: zbx_server_PostgreSQL == 0 and zbx_server_Webserver == 1
+  notify: start zabbix-server
+
 - name: Copy Zabbix Server Config
   template: src=zabbix_server.conf.j2 dest=/etc/zabbix/zabbix_server.conf
 
@@ -29,28 +36,13 @@
   template: src=zabbix.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf
   when: zbx_server_Webserver == 1
 
-- name: Install Zabbix Mysql Web Packages
-  yum: name={{item}} state=present
-  with_items:
-    - zabbix-web-pgsql-{{zbx_server_Version}}
-  when: zbx_server_PostgreSQL == 0 and zbx_server_Webserver == 1
-  notify: start zabbix-server
+- name: Install PostgreSQL Database
+  include: postgresql.yml
+  when: zbx_server_PostgreSQL == 1
 
-- name: Add .pgpass file
-  template: src=.pgpass.j2 dest=/root/.pgpass mode=0600
-
-- name: Upload zabbix schema
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_server_Version }}/create/schema.sql
-
-- name: Upload zabbix Images
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_server_Version }}/create/images.sql
-
-- name: Upload zabbix Data
-  shell: psql -U zabbix < /usr/share/doc/zabbix-server-pgsql-{{ zbx_server_Version }}/create/data.sql
-
-- name: Cleanup .pgpass file
-  file: path=/root/.pgpass state=absent
-
+- name: Install MySQL Database
+  include: mysql.yml
+  when: zbx_server_PostgreSQL == 0
 
 - name: Open the IPTables port 10051 on Zabbix-Server
   lineinfile: dest=/etc/sysconfig/iptables
@@ -73,8 +65,14 @@
 - name: Configure SELinux Policy httpd
   command: setsebool -P httpd_can_network_connect on
 
+- name: Configure SELinux Policy httpd can connect db
+  command: setsebool -P httpd_can_network_connect_db on
+
 - name: Configure SELinux Policy zabbix
   command: setsebool -P zabbix_can_network on
+
+  notify:
+    - start zabbix-server
 
   notify:
     - restart iptables
