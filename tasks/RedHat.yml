@@ -3,26 +3,22 @@
 - name: Install Policy Coreutils package
   yum: name=policycoreutils state=present
 
-- name: Install Zabbix Repository
-  yum: name={{zbx_server_repo}} state=present
-  when: zbx_server_repo_Enabled == 1
+- name: Install Zabbix key
+  rpm_key: key=http://repo.zabbix.com/zabbix-official-repo.key state=present
+
+- name: Copy Zabbix Repo Config
+  template: src=zabbix.repo.j2 dest=/etc/yum.repos.d/zabbix.repo
 
 - name: Install Zabbix PostgreSQL packages
-  yum: name={{item}} state=present
-  with_items:
-    - zabbix-server-pgsql-{{zbx_server_Version}}
+  yum: name=zabbix-server-pgsql-{{zbx_server_Version}} state=present
   when: zbx_server_PostgreSQL == 1
 
 - name: Install Zabbix Mysql Packages
-  yum: name={{item}} state=present
-  with_items:
-    - zabbix-server-mysql-{{zbx_server_Version}}
+  yum: name=zabbix-server-mysql-{{zbx_server_Version}} state=present
   when: zbx_server_PostgreSQL == 0
 
 - name: Install Zabbix PostgreSQL Web Packages
-  yum: name={{item}} state=present
-  with_items:
-    - zabbix-web-pgsql-{{zbx_server_Version}}
+  yum: name=zabbix-web-pgsql-{{zbx_server_Version}} state=present
   when: zbx_server_PostgreSQL == 1 and zbx_server_Webserver == 1
   notify: start zabbix-server
 

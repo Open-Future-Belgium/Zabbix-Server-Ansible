@@ -1,7 +1,0 @@
-# file: zabbix-server.yml
-- hosts: zabbixserver
-  user: root
-  sudo: yes
-  sudo_user: root
-  roles:
-    - zabbix-server

@@ -1,4 +1,4 @@
----
+--
 # defaults file for zabbix-server
 
 # Zabbix Repository
@@ -10,11 +10,16 @@ zbx_server_repo: "http://repo.zabbix.com/zabbix/2.2/rhel/6/x86_64/zabbix-release
 zbx_server_PostgreSQL: 1                                        # 1 for PostgreSQL 0 for MySQL Database
 zbx_server_Webserver: 1                                         # 1 To install the Webserver 0 to install only the Zabbix Server
 
-# defaults file for Zabbix-Server
-# Zabbix Server Version
-zbx_server_Version: "2.2.3"
+# Database Port Postgres / Mysql
+pg_cfg_srv_listen_port: "5432"
+my_cfg_srv_listen_port: "3306"
 
-pg_cfg_srv_listen_port: '5432'
+
+# --- Defaults file for Zabbix-Server ---
+
+# Zabbix Server Version
+zbx_server_Version: "2.2.4"
+
 
 # General Zabbix Server Parameters
 ############ GENERAL PARAMETERS #################
