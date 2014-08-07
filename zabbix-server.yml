@@ -1,14 +1,7 @@
----
-- hosts: zbbxsrv
-  remote_user: root
-  vars_files:
-    - 'defaults/postgresql.yml'
-    - 'defaults/zabbix.yml'
-    - 'defaults/httpd.yml'
-  tasks:
-    - include: 'tasks/main.yml'
-  handlers:
-    - include: 'handlers/main.yml'
-  vars_prompt:
-    ip_httpd: "On what ip should apache run ?"
-#    install_method: "Do you want to install from online or offline sources (online/offline) ?"
+# file: zabbix-server.yml
+- hosts: zabbixserver
+  user: root
+  sudo: yes
+  sudo_user: root
+  roles:
+    - zabbix-server
