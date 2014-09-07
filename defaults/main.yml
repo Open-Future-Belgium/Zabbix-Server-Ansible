@@ -18,7 +18,7 @@ my_cfg_srv_listen_port: "3306"
 # --- Defaults file for Zabbix-Server ---
 
 # Zabbix Server Version
-zbx_server_Version: "2.2.4"
+zbx_server_Version: "2.2.5"
 
 
 # General Zabbix Server Parameters
