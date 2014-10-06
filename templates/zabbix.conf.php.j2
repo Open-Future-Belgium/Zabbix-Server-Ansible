@@ -1,0 +1,39 @@
+<?php
+// Zabbix GUI configuration file
+global $DB;
+
+{% if zbx_server_PostgreSQL %}
+$DB['TYPE']     = 'POSTGRESQL';
+{% else %}
+$DB['TYPE']     = 'MYSQL';
+{% endif %}
+
+$DB['SERVER']   = '{{zbx_server_DBHost}}';
+{% if zbx_server_DBPort %}
+$DB['PORT']     = '{{zbx_server_DBPort}}';
+{% else %}
+$DB['PORT']     = '0';
+{% endif %}
+
+$DB['DATABASE'] = '{{zbx_server_DBName}}';
+$DB['USER']     = '{{zbx_server_DBUser}}';
+$DB['PASSWORD'] = '{{zbx_server_DBPassword}}';
+
+// SCHEMA is relevant only for IBM_DB2 database
+{% if zbx_server_DBSchema %}
+$DB['SCHEMA'] = '{{zbx_server_DBSchema}}';
+{% else %}
+$DB['SCHEMA'] = '';
+{% endif %}
+
+{% if zbx_server_SourceIP %}
+$ZBX_SERVER      = '{{zbx_server_SourceIP}}';
+{% else %}
+$ZBX_SERVER      = '127.0.0.1';
+{% endif %}
+
+$ZBX_SERVER_PORT = '{{zbx_server_ListenPort}}';
+$ZBX_SERVER_NAME = '{{ansible_nodename}}';
+
+$IMAGE_FORMAT_DEFAULT = IMAGE_FORMAT_PNG;
+?>

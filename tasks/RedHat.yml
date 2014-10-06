@@ -37,6 +37,10 @@
   template: src=zabbix.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf
   when: zbx_server_Webserver == 1
 
+- name: Copy Zabbix Web frontend Config
+  template: src=zabbix.conf.php.j2 dest=/etc/zabbix/web/zabbix.conf.php
+  when: zbx_server_Webserver == 1
+
 - name: Install PostgreSQL Database
   include: postgresql.yml
   when: zbx_server_PostgreSQL == 1
@@ -44,6 +48,18 @@
 - name: Install MySQL Database
   include: mysql.yml
   when: zbx_server_PostgreSQL == 0
+
+- name: Configure SELinux Policy httpd
+  command: setsebool -P httpd_can_network_connect on
+  when: ansible_selinux
+
+- name: Configure SELinux Policy httpd can connect db
+  command: setsebool -P httpd_can_network_connect_db on
+  when: ansible_selinux
+
+- name: Configure SELinux Policy zabbix
+  command: setsebool -P zabbix_can_network on
+  when: ansible_selinux
 
 - name: Open the IPTables port 10051 on Zabbix-Server
   lineinfile: dest=/etc/sysconfig/iptables
@@ -63,14 +79,6 @@
   with_items:
     - { protocol: tcp, port: 80 }
 
-- name: Configure SELinux Policy httpd
-  command: setsebool -P httpd_can_network_connect on
-
-- name: Configure SELinux Policy httpd can connect db
-  command: setsebool -P httpd_can_network_connect_db on
-
-- name: Configure SELinux Policy zabbix
-  command: setsebool -P zabbix_can_network on
 
   notify:
     - start zabbix-server
