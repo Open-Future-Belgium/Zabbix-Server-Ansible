@@ -11,13 +11,13 @@ This playbook will install the Zabbix Server
 
 Version
 -------
-7/9/2014
+12/11/2014
 
 
 Requirements
 ------------
 
-At this moment the script only works on Redhat 6.x or Centos 6.x
+At this moment the script only works on Centos/Redhat 6.x or Centos/Rhel 7.x
 This script works with PostgreSQL and MySQL
 You still need ansible playbooks to install PostgreSQL or MySQL and Apache
 Mysql will create a Database Postgresql expects the Db to be there (todo)

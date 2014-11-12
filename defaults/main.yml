@@ -3,7 +3,8 @@
 
 # Zabbix Repository
 zbx_server_repo_Enabled: 1                                      # Add 0 in case you want to use your own repo
-zbx_server_repo: "http://repo.zabbix.com/zabbix/2.2/rhel/6/x86_64/zabbix-release-2.2-1.el6.noarch.rpm"
+zbx_server_repo: "http://repo.zabbix.com/zabbix/2.4/rhel/6/x86_64/zabbix-release-2.4-1.el6.noarch.rpm"
+zbx_server_repo_el7: "http://repo.zabbix.com/zabbix/2.4/rhel/7/x86_64/zabbix-release-2.4-1.el7.noarch.rpm"
 
 
 # Zabbix Server Settings
@@ -18,20 +19,21 @@ my_cfg_srv_listen_port: "3306"
 # --- Defaults file for Zabbix-Server ---
 
 # Zabbix Server Version
-zbx_server_Version: "2.2.5"
+zbx_server_Version: "2.4.1"
 
+# Configure Selinux or not
+ansible_selinux: 1                                               # 1 will configure Selinux 0 will not
 
 # General Zabbix Server Parameters
 ############ GENERAL PARAMETERS #################
 
-zbx_server_NodeID: 0                                             # Unique NodeID in distributed setup 0=Standalone Server
 zbx_server_ListenPort: 10051                                     # Listen port for trapper
 zbx_server_SourceIP:                                             # Source IP address for outgoing connections
 zbx_server_LogFile: "/var/log/zabbix/zabbix_server.log"          # Name of log file if not set syslog is used
 zbx_server_LogFileSize: 0                                        # Maximum size of log file in MB. 0 = Disabled auto log rotate
 zbx_server_DebugLevel: 1                                         # DebugLevel 0=no debug, 1=critical, 2=error info, 3=warnings, 4=debug
 zbx_server_PidFile: "/var/run/zabbix/zabbix_server.pid"          # Location of the PID file.
-zbx_server_DBHost: localhost                                     # If set to localhost, socket is used for MySQL, if set empty socket is used for PostgreSQL
+zbx_server_DBHost:                                               # If set to localhost, socket is used for MySQL, if set empty socket is used for PostgreSQL
 zbx_server_DBName: zabbix                                        # DBName For SQLite3 path to database file must be provided. DBUser and DBPassword are ignored
 zbx_server_DBSchema:                                             # Schema name. Used only for IBM DB2
 zbx_server_DBUser: zabbix                                        # Database Username. Ignored for SQLite.

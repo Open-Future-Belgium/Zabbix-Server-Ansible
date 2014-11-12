@@ -2,7 +2,7 @@
 // Zabbix GUI configuration file
 global $DB;
 
-$DB['TYPE']     = 'MYSQL';
+$DB['TYPE']     = 'POSTGRESQL';
 {% if zbx_server_DBHost %}}
 $DB['SERVER']   = '{{zbx_server_DBHost}}';
 {% else %}

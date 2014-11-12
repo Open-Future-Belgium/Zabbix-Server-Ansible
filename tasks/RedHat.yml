@@ -3,11 +3,13 @@
 - name: Install Policy Coreutils package
   yum: name=policycoreutils state=present
 
-- name: Install Zabbix key
-  rpm_key: key=http://repo.zabbix.com/zabbix-official-repo.key state=present
+- name: Install Zabbix key on rhel 6
+  yum: name={{ zbx_server_repo }} state=present
+  when: ansible_distribution_major_version == '6'
 
-- name: Copy Zabbix Repo Config
-  template: src=zabbix.repo.j2 dest=/etc/yum.repos.d/zabbix.repo
+- name: Install Zabbix key on rhel 6
+  yum: name={{ zbx_server_repo_el7 }} state=present
+  when: ansible_distribution_major_version == '7'
 
 - name: Install Zabbix PostgreSQL packages
   yum: name=zabbix-server-pgsql-{{zbx_server_Version}} state=present
@@ -29,16 +31,21 @@
   when: zbx_server_PostgreSQL == 0 and zbx_server_Webserver == 1
   notify: start zabbix-server
 
-- name: Copy Zabbix Server Config
-  template: src=zabbix_server.conf.j2 dest=/etc/zabbix/zabbix_server.conf
-
-- name: Copy Zabbix Server PHP Config
+- name: Copy Zabbix Server PHP Config for Rhel 6
   template: src=zabbix.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf
-  when: zbx_server_Webserver == 1
+  when: zbx_server_Webserver == 1 and ansible_distribution_major_version == '6'
 
-- name: Copy Zabbix Web frontend Config
+- name: Copy Zabbix Server PHP Config for Rhel 7
+  template: src=zabbix7.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf
+  when: zbx_server_Webserver == 1 and ansible_distribution_major_version == '7'
+
+- name: Copy Zabbix Web frontend Config for MySQL
   template: src=zabbix.conf.php.j2 dest=/etc/zabbix/web/zabbix.conf.php
-  when: zbx_server_Webserver == 1
+  when: zbx_server_Webserver == 1 and zbx_server_PostgreSQL == 0
+
+- name: Copy Zabbix Web frontend Config for PostgreSQL
+  template: src=zabbix.conf2.php.j2 dest=/etc/zabbix/web/zabbix.conf.php
+  when: zbx_server_Webserver == 1 and zbx_server_PostgreSQL == 1
 
 - name: Install PostgreSQL Database
   include: postgresql.yml
@@ -48,17 +55,17 @@
   include: mysql.yml
   when: zbx_server_PostgreSQL == 0
 
-- name: Configure SELinux Policy httpd
-  command: setsebool -P httpd_can_network_connect on
-  when: ansible_selinux
+- name: Install libsemanage-python for selinux support
+  yum: name=libsemanage-python state=present
+
+- name: Ensure httpd can connect to network ports
+  seboolean: name=httpd_can_network_connect state=yes persistent=yes
 
 - name: Configure SELinux Policy httpd can connect db
-  command: setsebool -P httpd_can_network_connect_db on
-  when: ansible_selinux
+  seboolean: name=httpd_can_network_connect_db state=yes persistent=yes
 
 - name: Configure SELinux Policy zabbix
-  command: setsebool -P zabbix_can_network on
-  when: ansible_selinux
+  seboolean: name=zabbix_can_network state=yes persistent=yes
 
 - name: Open the IPTables port 10051 on Zabbix-Server
   lineinfile: dest=/etc/sysconfig/iptables
@@ -69,22 +76,26 @@
     - { protocol: tcp, port: 10051 }
   notify:
     - restart iptables
+  when: ansible_distribution_major_version == '6'
 
-- name: Open the IPTables port 80 on Zabbix-Server
-  lineinfile: dest=/etc/sysconfig/iptables
-            regexp="^-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT$"
-            line="-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT"
-            insertafter="^:OUTPUT ACCEPT \[\d*:\d*\]$"
-  with_items:
-    - { protocol: tcp, port: 80 }
+- name: Open the Firewalld port 10051/tcp on Zabbix-server
+  firewalld: port=10051/tcp permanent=true state=enabled
+  when: ansible_distribution_major_version == '7'
 
+- name: Open the Firewalld port 10051/udp on Zabbix-server
+  firewalld: port=10051/udp permanent=true state=enabled
+  when: ansible_distribution_major_version == '7'
+
+- name: Reload firewalld config
+  command: firewall-cmd --reload
+  when: ansible_distribution_major_version == '7'
 
   notify:
     - start zabbix-server
 
   notify:
     - restart iptables
-  when: zbx_server_Webserver == 1
+  when: zbx_server_Webserver == 1 and ansible_distribution_major_version == '6'
 
   notify:
     - restart httpd
