@@ -17,7 +17,7 @@ Version
 Requirements
 ------------
 
-At this moment the script only works on Centos/Redhat 6.x or Centos/Rhel 7.x
+At this moment the script only works on Redhat/Centos 6.x or Redhat/Centos 7.x
 This script works with PostgreSQL and MySQL
 You still need ansible playbooks to install PostgreSQL or MySQL and Apache
 Mysql will create a Database Postgresql expects the Db to be there (todo)
