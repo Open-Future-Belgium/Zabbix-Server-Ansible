@@ -7,7 +7,7 @@
   yum: name={{ zbx_server_repo }} state=present
   when: ansible_distribution_major_version == '6'
 
-- name: Install Zabbix key on rhel 6
+- name: Install Zabbix key on rhel 7
   yum: name={{ zbx_server_repo_el7 }} state=present
   when: ansible_distribution_major_version == '7'
 
@@ -60,12 +60,15 @@
 
 - name: Ensure httpd can connect to network ports
   seboolean: name=httpd_can_network_connect state=yes persistent=yes
+  when: ansible_selinux.status == "enabled"
 
 - name: Configure SELinux Policy httpd can connect db
   seboolean: name=httpd_can_network_connect_db state=yes persistent=yes
+  when: ansible_selinux.status == "enabled"
 
 - name: Configure SELinux Policy zabbix
   seboolean: name=zabbix_can_network state=yes persistent=yes
+  when: ansible_selinux.status == "enabled"
 
 - name: Open the IPTables port 10051 on Zabbix-Server
   lineinfile: dest=/etc/sysconfig/iptables
@@ -79,12 +82,11 @@
   when: ansible_distribution_major_version == '6'
 
 - name: Open the Firewalld port 10051/tcp on Zabbix-server
-  firewalld: port=10051/tcp permanent=true state=enabled
+  firewalld: port={{ item }} permanent=true state=enabled
   when: ansible_distribution_major_version == '7'
-
-- name: Open the Firewalld port 10051/udp on Zabbix-server
-  firewalld: port=10051/udp permanent=true state=enabled
-  when: ansible_distribution_major_version == '7'
+  with_items:
+    - 10051/tcp
+    - 10051/udp
 
 - name: Reload firewalld config
   command: firewall-cmd --reload
@@ -100,3 +102,4 @@
   notify:
     - restart httpd
   when: zbx_server_Webserver == 1
+
