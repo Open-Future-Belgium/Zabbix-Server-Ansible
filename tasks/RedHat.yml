@@ -2,6 +2,7 @@
 # tasks file for zabbix-server
 - name: Install Policy Coreutils package
   yum: name=policycoreutils state=present
+  when: ansible_selinux.status == "enabled"
 
 - name: Install Zabbix key on rhel 6
   yum: name={{ zbx_server_repo }} state=present
@@ -57,6 +58,7 @@
 
 - name: Install libsemanage-python for selinux support
   yum: name=libsemanage-python state=present
+  when: ansible_selinux.status == "enabled"
 
 - name: Ensure httpd can connect to network ports
   seboolean: name=httpd_can_network_connect state=yes persistent=yes
