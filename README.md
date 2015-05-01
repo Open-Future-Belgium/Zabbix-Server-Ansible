@@ -31,6 +31,18 @@ All variables can be altered in the defaults directory.
 * postgresql.yml
 * zabbix.yml
 
+Example Playbook
+-------------------------
+```yaml
+# file: localrepo.yml
+- hosts: ZabbixServer
+  user: someuser
+  sudo: yes
+  sudo_user: root
+  roles:
+    - Zabbix-Server
+```
+
 Dependencies
 ------------
 
