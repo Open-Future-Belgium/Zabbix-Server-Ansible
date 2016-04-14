@@ -1,18 +1,13 @@
 ---
 # handlers file for zabbix-server
 
-- name: restart iptables
-  service:
-    name=iptables
-    state=restarted
-
 - name: start zabbix-server
   service:
     name=zabbix-server
     state=started
     enabled=yes
 
-- name: restart httpd
+- name: restart zabbix-server
   service:
-    name=httpd
+    name=zabbix-server
     state=restarted

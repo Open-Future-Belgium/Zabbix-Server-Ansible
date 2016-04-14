@@ -4,14 +4,16 @@ Zabbix Server
 This playbook will install the Zabbix Server
 
 1. Edit the zabbix-server.yml file and add replace host
-2. Edit files in directory defaults and change variables to your needs
+2. Add vars to your role to override the default vars
 3. Install with tags if u want to exclude apache, postgres or zabbix
-4. ansible-playbook zabbix-server.yml --tags "postgres,http,zabbix"
+4. ansible-playbook zabbix-server.yml --tags "postgres,zabbix"
 5. Else just run ansible-playbook zabbix-server.yml
 
 Version
 -------
 12/11/2014
+14/04/2016 Moved from template to regexp this makes this role version indepdent
+and future proof
 
 
 Requirements
@@ -28,8 +30,6 @@ All variables can be altered in the defaults directory.
 
 * httpd.yml
 * main.yml
-* postgresql.yml
-* zabbix.yml
 
 Example Playbook
 -------------------------

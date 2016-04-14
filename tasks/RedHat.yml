@@ -4,10 +4,6 @@
   yum: name=policycoreutils state=present
   when: ansible_selinux.status == "enabled"
 
-- name: Install Zabbix key on rhel 6
-  yum: name={{ zbx_server_repo }} state=present
-  when: ansible_distribution_major_version == '6'
-
 - name: Install Zabbix key on rhel 7
   yum: name={{ zbx_server_repo_el7 }} state=present
   when: ansible_distribution_major_version == '7'
@@ -25,6 +21,18 @@
   when: zbx_server_PostgreSQL == 1 and zbx_server_Webserver == 1
   notify: start zabbix-server
 
+- name: Populate the Zabbix PGSQL Database
+  shell: zcat /usr/share/doc/zabbix-server-pgsql-{{ zbx_server_Version }}/create.sql.gz | psql -U zabbix zabbix arg1 arg2
+  args:
+    creates: /tmp/createdb.done
+  when: zbx_server_PostgreSQL == 1 and zbx_create_db == 1
+
+- name: Populate the Zabbix MYSQL Database
+  shell: zcat /usr/share/doc/zabbix-server-mysql-{{ zbx_server_Version }}/create.sql.gz | mysql -u zabbix zabbix
+  when: zbx_server_PostgreSQL == 0 and zbx_create_db == 1
+  args:
+    creates: /tmp/createdb.done
+
 - name: Install Zabbix Mysql Web Packages
   yum: name={{item}} state=present
   with_items:
@@ -32,13 +40,10 @@
   when: zbx_server_PostgreSQL == 0 and zbx_server_Webserver == 1
   notify: start zabbix-server
 
-- name: Copy Zabbix Server PHP Config for Rhel 6
-  template: src=zabbix.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf
-  when: zbx_server_Webserver == 1 and ansible_distribution_major_version == '6'
-
 - name: Copy Zabbix Server PHP Config for Rhel 7
   template: src=zabbix7.conf.j2 dest=/etc/httpd/conf.d/zabbix.conf
   when: zbx_server_Webserver == 1 and ansible_distribution_major_version == '7'
+  notify: start zabbix-server
 
 - name: Copy Zabbix Web frontend Config for MySQL
   template: src=zabbix.conf.php.j2 dest=/etc/zabbix/web/zabbix.conf.php
@@ -48,13 +53,8 @@
   template: src=zabbix.conf2.php.j2 dest=/etc/zabbix/web/zabbix.conf.php
   when: zbx_server_Webserver == 1 and zbx_server_PostgreSQL == 1
 
-- name: Install PostgreSQL Database
-  include: postgresql.yml
-  when: zbx_server_PostgreSQL == 1
-
-- name: Install MySQL Database
-  include: mysql.yml
-  when: zbx_server_PostgreSQL == 0
+- name: Add folder /usr/local/etc/zabbix_server.conf.d
+  file: path=/usr/local/etc/zabbix_server.conf.d state=directory mode=0770 owner=zabbix group=zabbix
 
 - name: Install libsemanage-python for selinux support
   yum: name=libsemanage-python state=present
@@ -72,17 +72,6 @@
   seboolean: name=zabbix_can_network state=yes persistent=yes
   when: ansible_selinux.status == "enabled"
 
-- name: Open the IPTables port 10051 on Zabbix-Server
-  lineinfile: dest=/etc/sysconfig/iptables
-            regexp="^-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT$"
-            line="-A INPUT -p {{item.protocol}} -m {{item.protocol}} --dport {{item.port}} -j ACCEPT"
-            insertafter="^:OUTPUT ACCEPT \[\d*:\d*\]$"
-  with_items:
-    - { protocol: tcp, port: 10051 }
-  notify:
-    - restart iptables
-  when: ansible_distribution_major_version == '6'
-
 - name: Open the Firewalld port 10051/tcp on Zabbix-server
   firewalld: port={{ item }} permanent=true state=enabled
   when: ansible_distribution_major_version == '7'
@@ -94,14 +83,5 @@
   command: firewall-cmd --reload
   when: ansible_distribution_major_version == '7'
 
-  notify:
-    - start zabbix-server
-
-  notify:
-    - restart iptables
-  when: zbx_server_Webserver == 1 and ansible_distribution_major_version == '6'
-
-  notify:
-    - restart httpd
-  when: zbx_server_Webserver == 1
-
+- name: Configure the Zabbix-Server config file
+  include: zabbix-server-config.yml

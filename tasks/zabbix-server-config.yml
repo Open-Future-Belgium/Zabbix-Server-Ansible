@@ -1,0 +1,677 @@
+# Config settings for the Server conf file
+---
+- name: Add Server Listen Port
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^ListenPort=
+    line=ListenPort={{zbx_server_ListenPort}}
+    insertafter='# ListenPort=10051'
+  when: zbx_server_ListenPort|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add Server Source IP
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^SourceIP=
+    line=SourceIP={{zbx_server_SourceIP}}
+    insertafter='# SourceIP='
+  when: zbx_server_SourceIP|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add LogType
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^LogType=
+    line=LogType={{zbx_server_LogType}}
+    insertafter='# LogType='
+  when: zbx_server_LogType|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add Server LogFile
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^LogFile=
+    line=LogFile={{zbx_server_LogFile}}
+  when: zbx_server_LogFile|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add Log File Size
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^LogFileSize=
+    line=LogFileSize={{zbx_server_LogFileSize}}
+  when: zbx_server_LogFileSize|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add DebugLevel
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DebugLevel=
+    line=DebugLevel={{zbx_server_DebugLevel}}
+    insertafter='# DebugLevel='
+  when: zbx_server_DebugLevel|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add PidFile
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^PidFile=
+    line=PidFile={{zbx_server_PidFile}}
+    insertafter='# PidFile='
+  when: zbx_server_PidFile|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add DBHost For PostgreSQL
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DBHost=
+    line=DBHost=
+    insertafter='# DBHost='
+  when: zbx_server_PostgreSQL == '1'
+  notify: restart zabbix-server
+
+- name: Add DBHost MySQL
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DBHost=
+    line=DBHost=localhost
+    insertafter='# DBHost='
+  when: zbx_server_PostgreSQL == '0'
+  notify: restart zabbix-server
+
+- name: Add DBName
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DBName=
+    line=DBName={{zbx_server_DBName}}
+  when: zbx_server_DBName|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add DBSchema
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DBSchema=
+    line=DBSchema={{zbx_server_DBSchema}}
+  when: zbx_server_DBSchema|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add DBUser
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DBUser=
+    line=DBUser={{zbx_server_DBUser}}
+  when: zbx_server_DBUser|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add DBPassword
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DBPassword=
+    line=DBPassword={{zbx_server_DBPassword}}
+    insertafter='# DBPassword='
+  when: zbx_server_DBPassword|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add DBSocket
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DBSocket=
+    line=DBSocket={{zbx_server_DBSocket}}
+    insertafter='# DBSocket='
+  when: zbx_server_DBSocket|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add DBPort
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^DBPort=
+    line=DBPort={{zbx_server_DBPort}}
+    insertafter='# DBPort='
+  when: zbx_server_DBPort|default("") != ""
+  notify: restart zabbix-server
+
+
+################## Advanced Parameters ##################
+
+- name: Add StartPollers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartPollers=|^StartPollers='
+    line=StartPollers={{zbx_server_StartPollers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartIPMIPollers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartIPMIPollers=|^StartIPMIPollers='
+    line=StartIPMIPollers={{zbx_server_StartIPMIPollers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartPollersUnreachable
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartPollersUnreachable=|^StartPollersUnreachable='
+    line=StartPollersUnreachable={{zbx_server_StartPollersUnreachable}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartTrappers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartTrappers=|^StartTrappers='
+    line=StartTrappers={{zbx_server_StartTrappers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartPingers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartPingers=|^StartPingers='
+    line=StartPingers={{zbx_server_StartPingers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartDiscoverers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartDiscoverers=|^StartDiscovererers='
+    line=StartDiscoverers={{zbx_server_StartDiscoverers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartHTTPPollers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartHTTPPollers=|^StartHTTPPollers='
+    line=StartHTTPPollers={{zbx_server_StartHTTPPollers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartTimers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartTimers=|^StartTimers='
+    line=StartTimers={{zbx_server_StartTimers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartEscalators
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartEscalators=|^StartEscalators='
+    line=StartEscalators={{zbx_server_StartEscalators}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add JavaGateway
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^JavaGateway=
+    line=JavaGateway={{zbx_server_JavaGateway}}
+    insertafter='# JavaGateway='
+  when: zbx_server_SourceIP|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add JavaGateway Port
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# JavaGatewayPort=|^JavaGatewayPort='
+    line=JavaGatewayPort={{zbx_server_JavaGatewayPort}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartJavaPollers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartJavaPollers=|^StartJavaPollers='
+    line=StartJavaPollers={{zbx_server_StartJavaPollers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartVMwareCollectors
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartVMwareCollectors=|^StartVMwareCollectors='
+    line=StartVMwareCollectors={{zbx_server_StartVMwareCollectors}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add VMwareFrequency
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# VMwareFrequency=|^VMwareFrequency='
+    line=VMwareFrequency={{zbx_server_VMwareFrequency}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add VMwarePerfFrequency
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# VMwarePerfFrequency=|^VMwarePerfFrequency='
+    line=VMwarePerfFrequency={{zbx_server_VMwarePerfFrequency}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add VMwareCacheSize
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# VMwareCacheSize=|^VMwareCacheSize='
+    line=VMwareCacheSize={{zbx_server_VMwareCacheSize}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add VMwareTimeout
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# VMwareTimeout=|^VMwareTimeout='
+    line=VMwareTimeout={{zbx_server_VMwareTimeout}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add SNMPTrapperfile
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# SNMPTrapperFile=|^SNMPTrapperFile='
+    line=SNMPTrapperFile={{zbx_server_SNMPTrapperFile}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartSNMPTrapper
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartSNMPTrapper=|^StartSNMPTrapper='
+    line=StartSNMPTrapper={{zbx_server_StartSNMPTrapper}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add ListenIP
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^ListenIP='
+    line=ListenIP={{zbx_server_ListenIP}}
+    insertafter='# ListenIP='
+  when: zbx_server_ListenIP|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add HousekeepingFrequency
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# HousekeepingFrequency=|^HousekeepingFrequency='
+    line=HousekeepingFrequency={{zbx_server_HousekeepingFrequency}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add MaxHousekeeperDelete
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# MaxHousekeeperDelete=|^MaxHouseKeeperDelete='
+    line=MaxHousekeeperDelete={{zbx_server_MaxHousekeeperDelete}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add SenderFrequency
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# SenderFrequency=|^SenderFrequency='
+    line=SenderFrequency={{zbx_server_SenderFrequency}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add CacheSize
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# CacheSize=|^CacheSize='
+    line=CacheSize={{zbx_server_CacheSize}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add CacheUpdateFrequency
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# CacheUpdateFrequency=|^CacheUpdateFrequency='
+    line=CacheUpdateFrequency={{zbx_server_CacheUpdateFrequency}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartDBSyncers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartDBSyncers=|^StartDBSyncers='
+    line=StartDBSyncers={{zbx_server_StartDBSyncers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add HistoryCacheSize
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# HistoryCacheSize=|^HistoryCacheSize='
+    line=HistoryCacheSize={{zbx_server_HistoryCacheSize}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add HistoryIndexCacheSize
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# HistoryIndexCacheSize=|^HistoryIndexCacheSize='
+    line=HistoryIndexCacheSize={{zbx_server_HistoryIndexCacheSize}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add TrendCacheSize
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# TrendCacheSize=|^TrendCacheSize='
+    line=TrendCacheSize={{zbx_server_TrendCacheSize}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add ValueCacheSize
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# ValueCacheSize=|^ValueCacheSize='
+    line=ValueCacheSize={{zbx_server_ValueCacheSize}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add Timeout
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# Timeout=|^Timeout='
+    line=Timeout={{zbx_server_Timeout}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add TrapperTimeout
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# TrapperTimeout=|^TrapperTimeout='
+    line=TrapperTimeout={{zbx_server_TrapperTimeout}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add UnreachablePeriod
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# UnreachablePeriod=|^UnreachablePeriod='
+    line=UnreachablePeriod={{zbx_server_UnreachablePeriod}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add UnavailableDelay
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# UnavailableDelay=|^UnavailableDelay='
+    line=UnavailableDelay={{zbx_server_UnavailableDelay}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add UnreachableDelay
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# UnreachableDelay=|^UnreachableDelay='
+    line=UnreachableDelay={{zbx_server_UnreachableDelay}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add AlertScriptsPath
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^AlertScriptsPath='
+    line=AlertScriptsPath={{zbx_server_AlertScriptsPath}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add ExternalScripts
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^ExternalScripts='
+    line=ExternalScripts={{zbx_server_ExternalScripts}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add FpingLocation
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# FpingLocation=|^FpingLocation='
+    line=FpingLocation={{zbx_server_FpingLocation}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add Fping6Location
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# Fping6Location=|^Fping6Location='
+    line=Fping6Location={{zbx_server_Fping6Location}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add SSHKeyLocation
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^SSHKeyLocation='
+    line=SSHKeyLocation={{zbx_server_SSHKeyLocation}}
+    insertafter='# SSHKeyLocation='
+  when: zbx_server_SSHKeyLocation|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add LogSlowQueries
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# LogSlowQueries=|^LogSlowQueries='
+    line=LogSlowQueries={{zbx_server_LogSlowQueries}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add TmpDir
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# TmpDir=|^TmpDir='
+    line=TmpDir={{zbx_server_TmpDir}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add StartProxyPollers
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# StartProxyPollers=|^StartProxyPollers='
+    line=StartProxyPollers={{zbx_server_StartProxyPollers}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add ProxyConfigFrequency
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# ProxyConfigFrequency=|^ProxyConfigFrequency='
+    line=ProxyConfigFrequency={{zbx_server_ProxyConfigFrequency}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add ProxyDataFrequency
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# ProxyDataFrequency=|^ProxyDataFrequency='
+    line=ProxyDataFrequency={{zbx_server_ProxyDataFrequency}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add AllowRoot
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# AllowRoot=|^AllowRoot='
+    line=AllowRoot={{zbx_server_AllowRoot}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add User
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# User=|^User='
+    line=User={{zbx_server_User}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add Include
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp='^# Include=|^Include='
+    line=Include={{zbx_server_Include}}
+    backrefs=yes
+  notify: restart zabbix-server
+
+- name: Add SSLCertLocation
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^SSLCertLocation=
+    line=SSLCertLocation={{zbx_server_SSLCertLocation}}
+    insertafter='# SSLCertLocation='
+  when: zbx_server_SSLCertLocation|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add SSLKeyLocation
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^SSLKeyLocation=
+    line=SSLKeyLocation={{zbx_server_SSLKeyLocation}}
+    insertafter='# SSLKeyLocation='
+  when: zbx_server_SSLKeyLocation|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add SSLCALocation
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^SSLCALocation=
+    line=SSLCALocation={{zbx_server_SSLCALocation}}
+    insertafter='# SSLCALocation='
+  when: zbx_server_SSLCALocation|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add LoadModulePath
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^LoadModulePath=
+    line=LoadModulePath={{zbx_server_LoadModulePath}}
+    insertafter='# LoadModulePath='
+  when: zbx_server_LoadModulePath|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add LoadModule
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^LoadModule=
+    line=LoadModule={{zbx_server_LoadModule}}
+    insertafter='# LoadModule='
+  when: zbx_server_LoadModule|default("") != ""
+  notify: restart zabbix-server
+
+####### TLS-RELATED PARAMETERS #######
+
+- name: Add TLSCAFile
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^TLSCAFile=
+    line=TLSCAFile={{zbx_server_TLSCAFile}}
+    insertafter='# TLSCAFile='
+  when: zbx_server_TLSCAFile|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add TLSCRLFile
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^TLSCRLFile=
+    line=TLSCRLFile={{zbx_server_TLSCRLFile}}
+    insertafter='# TLSCRLFile='
+  when: zbx_server_TLSCRLFile|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add TLSCertFile
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^TLSCertFile=
+    line=TLSCertFile={{zbx_server_TLSCertFile}}
+    insertafter='# TLSCertFile='
+  when: zbx_server_TLSCertFile|default("") != ""
+  notify: restart zabbix-server
+
+- name: Add TLSKeyFile
+  lineinfile:
+    state=present
+    dest=/etc/zabbix/zabbix_server.conf
+    regexp=^TLSKeyFile=
+    line=TLSKeyFile={{zbx_server_TLSKeyFile}}
+    insertafter='# TLSKeyFile='
+  when: zbx_server_TLSKeyFile|default("") != ""
+  notify: restart zabbix-server
+
